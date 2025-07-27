@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELEGRADE-NTN6G-VOICELAB - Project Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-dark: #0056b3;
+            --secondary-color: #6c757d;
+            --secondary-dark: #5a6268;
+            --accent-color: #28a745;
+            --accent-dark: #218838;
+            --bg-light: #f8f9fa;
+            --text-dark: #343a40;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1em;
+            color: #555;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .navigation ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .navigation li {
+            margin-bottom: 0;
+        }
+
+        .navigation a {
+            display: block;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation a:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .readme-section {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .readme-section a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .readme-section a:hover {
+            color: var(--accent-dark);
+            text-decoration: underline;
+        }
+
+        .readme-section p {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TELEGRADE-NTN6G-VOICELAB Project Showcase</h1>
+            <p>Welcome to the project demonstration page. Please select a section to view its content.</p>
+        </header>
+
+        <nav class="navigation">
+            <ul>
+                <li><a href="demo_page.html">View Demo Video</a></li>
+                <li><a href="mel_spectrogram_page.html">View Mel-frequency Spectrograms</a></li>
+                <li><a href="system_show_page.html">View System Diagram</a></li>
+                <li><a href="voice_reconstruction_page.html">View Voice Reconstruction Audios</a></li>
+                <li><a href="live_system_demo_page.html">View Live System Demonstration</a></li> </ul>
+        </nav>
+
+        <section class="readme-section">
+            <p>For more detailed information, please refer to the project's:</p>
+            <a href="../README.md" target="_blank">README.md</a>
+        </section>
+    </div>
+</body>
+</html>
