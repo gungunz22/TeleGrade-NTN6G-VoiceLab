@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live System Demonstration - TELEGRADE-NTN6G-VOICELAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary-color: #007bff;
@@ -27,16 +28,11 @@
             background-color: var(--bg-light);
             color: var(--text-dark);
             line-height: 1.6;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding-top: 40px;
         }
 
         .container {
-            max-width: 800px;
-            width: 90%;
+            max-width: 1200px;
+            width: 95%;
             margin: 20px auto;
             background-color: var(--card-bg);
             padding: 30px;
@@ -59,16 +55,47 @@
             border-bottom: 2px solid var(--border-color);
         }
 
-        .placeholder-content {
-            padding: 50px 20px;
-            font-size: 1.2em;
-            color: #666;
-            background-color: #e9ecef;
-            border-radius: 8px;
-            margin-top: 30px;
+        .controls {
+            margin-bottom: 30px;
         }
-        .placeholder-content p {
-            margin-bottom: 15px;
+
+        #startButton {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: white;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #startButton:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+        }
+        
+        #startButton:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: #fff;
         }
 
         .back-button-wrapper {
@@ -97,14 +124,158 @@
     <div class="container">
         <h1>Live System Demonstration</h1>
 
-        <div class="placeholder-content">
-            <p>Content for the live system demonstration will be placed here.</p>
-            <p>Please check back later for updates!</p>
+        <div class="controls">
+            <button id="startButton">Start Simulation</button>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <canvas id="anChart"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="sinrChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="perChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="qnChart"></canvas>
+            </div>
+        </div>
 
         <div class="back-button-wrapper">
             <a href="index.html" class="back-button">Back to Main Page</a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startButton = document.getElementById('startButton');
+
+            const chartConfigs = {
+                anChart: { title: 'An vs. Timeslot', yLabel: 'An' },
+                sinrChart: { title: 'SINR (dB) vs. Timeslot', yLabel: 'SINR (dB)' },
+                perChart: { title: 'PER vs. Timeslot', yLabel: 'PER' },
+                qnChart: { title: 'Qn vs. Timeslot', yLabel: 'Qn' }
+            };
+
+            let charts = {};
+
+            function createChart(canvasId, title, yLabel) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: yLabel,
+                            data: [],
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: title,
+                                font: { size: 16 }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Timeslot'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: yLabel
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Initialize empty charts
+            for (const [id, config] of Object.entries(chartConfigs)) {
+                charts[id] = createChart(id, config.title, config.yLabel);
+            }
+
+            async function startSimulation() {
+                startButton.disabled = true;
+                startButton.textContent = 'Simulation in Progress...';
+
+                try {
+                    const response = await fetch('./simulation_results_final.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+
+                    const timeslots = data.timeslot;
+                    const datasets = {
+                        anChart: data.An,
+                        sinrChart: data.SINR_dB,
+                        perChart: data.PER,
+                        qnChart: data.Qn
+                    };
+
+                    // Reset charts before starting
+                    for (const id in charts) {
+                        charts[id].data.labels = [];
+                        charts[id].data.datasets[0].data = [];
+                        charts[id].update();
+                    }
+
+                    let currentIndex = 0;
+                    const interval = setInterval(() => {
+                        if (currentIndex >= timeslots.length) {
+                            clearInterval(interval);
+                            startButton.textContent = 'Simulation Finished';
+                            return;
+                        }
+
+                        const currentTimeslot = timeslots[currentIndex];
+                        
+                        for (const [id, chart] of Object.entries(charts)) {
+                            chart.data.labels.push(currentTimeslot);
+                            chart.data.datasets[0].data.push(datasets[id][currentIndex]);
+                            
+                            // Keep the chart from getting too crowded
+                            if (chart.data.labels.length > 100) {
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                            }
+                            
+                            chart.update();
+                        }
+
+                        currentIndex++;
+                    }, 50); // Delay of 50ms between data points
+
+                } catch (error) {
+                    console.error("Failed to load or process simulation data:", error);
+                    alert("Error: Could not load simulation data. Check the console for details.");
+                    startButton.disabled = false;
+                    startButton.textContent = 'Start Simulation';
+                }
+            }
+
+            startButton.addEventListener('click', startSimulation);
+        });
+    </script>
 </body>
 </html>
