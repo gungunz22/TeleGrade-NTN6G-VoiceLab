@@ -219,7 +219,7 @@
                 startButton.textContent = 'Simulation in Progress...';
 
                 try {
-                    const response = await fetch('./simulation_results_final.json');
+                    const response = await fetch('simulation_results_final.json');
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -254,17 +254,14 @@
                             chart.data.labels.push(currentTimeslot);
                             chart.data.datasets[0].data.push(datasets[id][currentIndex]);
                             
-                            // Keep the chart from getting too crowded
-                            if (chart.data.labels.length > 100) {
-                                chart.data.labels.shift();
-                                chart.data.datasets[0].data.shift();
-                            }
-                            
-                            chart.update();
+                            chart.update('none'); // Use 'none' for no animation to improve performance
                         }
 
                         currentIndex++;
-                    }, 50); // Delay of 50ms between data points
+                    }, 50); // Reduced delay for faster drawing
+
+                    // Final update to ensure all charts are rendered correctly
+                    Object.values(charts).forEach(chart => chart.update());
 
                 } catch (error) {
                     console.error("Failed to load or process simulation data:", error);
