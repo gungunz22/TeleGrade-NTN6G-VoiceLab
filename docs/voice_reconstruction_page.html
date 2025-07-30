@@ -31,18 +31,17 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding-top: 40px;
+            padding: 40px 20px;
         }
 
         .container {
             max-width: 800px;
-            width: 90%;
+            width: 100%;
             margin: 20px auto;
             background-color: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 16px var(--shadow);
-            text-align: center;
             animation: fadeIn 1s ease-out;
         }
 
@@ -51,45 +50,122 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1 {
+        h1, h2 {
             color: var(--primary-dark);
+            text-align: center;
+        }
+        
+        h1 {
             font-size: 2.2em;
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--border-color);
         }
 
-        .audio-item {
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .simulator-section, .results-section {
             background-color: #f9f9f9;
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 25px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .audio-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
         }
 
-        .audio-item p {
+        .form-group label {
+            display: block;
             font-weight: bold;
             color: #555;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="file"],
+        .form-group select,
+        .form-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-container input[type="range"] {
+            flex-grow: 1;
+        }
+
+        #sinrValue {
+            font-weight: bold;
+            color: var(--primary-dark);
+            min-width: 50px;
+        }
+
+        .run-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 700;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .run-button:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+        
+        .run-button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+        }
+
+        #resultsSection {
+            display: none; /* Initially hidden */
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+        
+        .result-item p {
+            margin: 0 0 10px 0;
             font-size: 1.1em;
+        }
+        
+        .result-item .value {
+            font-weight: bold;
+            color: var(--primary-dark);
         }
 
         audio {
             width: 100%;
-            max-width: 600px; /* Adjust max width for audio player */
-            margin: 10px auto;
-            display: block;
+            margin-top: 10px;
         }
 
         .back-button-wrapper {
             margin-top: 30px;
+            text-align: center;
         }
 
         .back-button {
@@ -102,11 +178,9 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 700;
             font-size: 1.1em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .back-button:hover {
             background-color: var(--secondary-dark);
-            transform: translateY(-3px);
         }
     </style>
 </head>
@@ -114,25 +188,253 @@
     <div class="container">
         <h1>Voice Reconstruction Audios</h1>
 
-        <div class="audio-item">
-            <p>Example Audio 1 (filename.wav)</p>
-            <audio controls>
-                <source src="assets/voice_reconstruction/example_audio_1.wav" type="audio/wav">
-                Your browser does not support the audio element.
-            </audio>
+        <div class="simulator-section">
+            <h2>1. Configure Simulation</h2>
+            <div class="form-group">
+                <label for="audioUpload">Upload Your Audio File (.wav, .mp3)</label>
+                <input type="file" id="audioUpload" accept="audio/wav, audio/mpeg">
+            </div>
+            <div class="form-group">
+                <label for="codecSelect">Select Codec (Determines Bitrate `R_k`)</label>
+                <select id="codecSelect"></select>
+            </div>
+            <div class="form-group">
+                <label for="sinrSlider">Adjust Channel SINR (dB)</label>
+                <div class="slider-container">
+                    <input type="range" id="sinrSlider" min="-5" max="30" value="15" step="1">
+                    <span id="sinrValue">15 dB</span>
+                </div>
+            </div>
+            <button id="runButton" class="run-button" disabled>Upload Audio to Start</button>
         </div>
 
-        <div class="audio-item">
-            <p>Example Audio 2 (another_file.mp3)</p>
-            <audio controls>
-                <source src="assets/voice_reconstruction/example_audio_2.mp3" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+        <div id="resultsSection" class="results-section">
+            <h2>2. Simulation Results</h2>
+            <div class="result-item">
+                <p>Original Audio:</p>
+                <audio id="originalAudio" controls></audio>
+            </div>
+            <hr>
+            <div class="result-item">
+                <p>Quantization Distortion: <span id="distortionValue" class="value"></span></p>
+                <p>Packet Error Rate (PER): <span id="perValue" class="value"></span></p>
+                <p>Mean Opinion Score (MoS): <span id="mosValue" class="value"></span></p>
+            </div>
+            <div class="result-item">
+                <p>Reconstructed Audio (Simulated):</p>
+                <audio id="reconstructedAudio" controls></audio>
+            </div>
         </div>
 
         <div class="back-button-wrapper">
             <a href="index.html" class="back-button">Back to Main Page</a>
         </div>
     </div>
+
+    <script>
+        // --- Constants and Model Parameters ---
+        const DISTORTION_CONST = 0.1; // c in the formula
+        const CODECS = {
+            'Codec 1 (Low Rate)':  { R: 8000,  alpha: 0.5, beta: 1.5 }, // Low bitrate, sensitive to SINR
+            'Codec 2 (Mid Rate)':  { R: 16000, alpha: 0.6, beta: 1.8 }, // Medium bitrate
+            'Codec 3 (High Rate)': { R: 32000, alpha: 0.7, beta: 2.0 }  // High bitrate, more robust
+        };
+        const max_bitrate = Math.max(...Object.values(CODECS).map(c => c.R));
+
+        // --- DOM Elements ---
+        const audioUpload = document.getElementById('audioUpload');
+        const codecSelect = document.getElementById('codecSelect');
+        const sinrSlider = document.getElementById('sinrSlider');
+        const sinrValue = document.getElementById('sinrValue');
+        const runButton = document.getElementById('runButton');
+        const resultsSection = document.getElementById('resultsSection');
+        const originalAudio = document.getElementById('originalAudio');
+        const reconstructedAudio = document.getElementById('reconstructedAudio');
+        const distortionValue = document.getElementById('distortionValue');
+        const perValue = document.getElementById('perValue');
+        const mosValue = document.getElementById('mosValue');
+
+        let audioFile = null;
+        let originalAudioBuffer = null;
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // --- Core Logic ---
+
+        function populateCodecs() {
+            for (const name in CODECS) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = `${name} (${CODECS[name].R / 1000} kbps)`;
+                codecSelect.appendChild(option);
+            }
+        }
+
+        function calculateQuantizationDistortion(R_k, arrival_bits) {
+            // Dquant(qk) = c * exp(−Rk/Rmax) * rk
+            // We assume arrival_bits (rk) is proportional to the bitrate for this simulation
+            const rk = R_k; 
+            return DISTORTION_CONST * Math.exp(-R_k / max_bitrate) * rk;
+        }
+
+        function calculateMos(sinr, codec) {
+            // mos = alpha * log(sinr) + beta
+            // Note: Math.log is natural log (ln), which is what's typically used in these models.
+            // We convert SINR from dB to linear scale first: linear = 10^(dB/10)
+            const sinrLinear = Math.pow(10, sinr / 10);
+            const mos = codec.alpha * Math.log(sinrLinear) + codec.beta;
+            return Math.max(1, Math.min(5, mos)); // Clamp MoS between 1 and 5
+        }
+        
+        function calculatePer(sinr) {
+            // Simplified PER model: higher SINR -> lower PER.
+            // This is a heuristic model for demonstration.
+            const per = 0.5 * (1 - Math.tanh((sinr - 5) / 10)); // Sigmoid-like function
+            return Math.max(0, Math.min(1, per)); // Clamp PER between 0 and 1
+        }
+
+        function applyDistortion(buffer, per) {
+            const newBuffer = audioContext.createBuffer(
+                buffer.numberOfChannels,
+                buffer.length,
+                buffer.sampleRate
+            );
+
+            for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+                const originalData = buffer.getChannelData(channel);
+                const newData = newBuffer.getChannelData(channel);
+                
+                const chunkSize = Math.floor(buffer.sampleRate * 0.02); // 20ms chunks, typical for VoIP
+                
+                for (let i = 0; i < originalData.length; i += chunkSize) {
+                    if (Math.random() < per) {
+                        // Packet loss: fill chunk with silence
+                        for (let j = i; j < i + chunkSize && j < originalData.length; j++) {
+                            newData[j] = 0;
+                        }
+                    } else {
+                        // Packet received: copy data
+                        for (let j = i; j < i + chunkSize && j < originalData.length; j++) {
+                            newData[j] = originalData[j];
+                        }
+                    }
+                }
+            }
+            return newBuffer;
+        }
+        
+        function createAudioUrl(buffer) {
+            const wav = bufferToWave(buffer);
+            const blob = new Blob([wav], { type: 'audio/wav' });
+            return URL.createObjectURL(blob);
+        }
+
+        // --- Event Listeners ---
+
+        sinrSlider.addEventListener('input', () => {
+            sinrValue.textContent = `${sinrSlider.value} dB`;
+        });
+
+        audioUpload.addEventListener('change', (event) => {
+            audioFile = event.target.files[0];
+            if (audioFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    audioContext.decodeAudioData(e.target.result, (buffer) => {
+                        originalAudioBuffer = buffer;
+                        originalAudio.src = URL.createObjectURL(audioFile);
+                        runButton.disabled = false;
+                        runButton.textContent = 'Run Simulation';
+                    });
+                };
+                reader.readAsArrayBuffer(audioFile);
+            } else {
+                runButton.disabled = true;
+                runButton.textContent = 'Upload Audio to Start';
+            }
+        });
+
+        runButton.addEventListener('click', () => {
+            if (!originalAudioBuffer) {
+                alert('Please upload an audio file first.');
+                return;
+            }
+
+            // 1. Get parameters from UI
+            const selectedCodecName = codecSelect.value;
+            const selectedCodec = CODECS[selectedCodecName];
+            const sinr = parseFloat(sinrSlider.value);
+
+            // 2. Perform calculations
+            const distortion = calculateQuantizationDistortion(selectedCodec.R, selectedCodec.R);
+            const mos = calculateMos(sinr, selectedCodec);
+            const per = calculatePer(sinr);
+
+            // 3. Simulate reconstruction
+            const reconstructedBuffer = applyDistortion(originalAudioBuffer, per);
+            reconstructedAudio.src = createAudioUrl(reconstructedBuffer);
+
+            // 4. Display results
+            distortionValue.textContent = distortion.toFixed(2);
+            perValue.textContent = `${(per * 100).toFixed(1)}%`;
+            mosValue.textContent = `${mos.toFixed(2)} / 5.0`;
+            resultsSection.style.display = 'block';
+        });
+
+        // --- Initialization ---
+        populateCodecs();
+        
+        // Helper to convert AudioBuffer to a WAV file blob
+        function bufferToWave(abuffer) {
+            let numOfChan = abuffer.numberOfChannels,
+                length = abuffer.length * numOfChan * 2 + 44,
+                buffer = new ArrayBuffer(length),
+                view = new DataView(buffer),
+                channels = [],
+                i,
+                sample,
+                offset = 0,
+                pos = 0;
+
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8); // file length - 8
+            setUint32(0x45564157); // "WAVE"
+
+            setUint32(0x20746d66); // "fmt " chunk
+            setUint32(16); // length = 16
+            setUint16(1); // PCM (uncompressed)
+            setUint16(numOfChan);
+            setUint32(abuffer.sampleRate);
+            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+            setUint16(numOfChan * 2); // block-align
+            setUint16(16); // 16-bit
+
+            setUint32(0x61746164); // "data" - chunk
+            setUint32(length - pos - 4); // chunk length
+
+            for (i = 0; i < abuffer.numberOfChannels; i++)
+                channels.push(abuffer.getChannelData(i));
+
+            while (pos < length) {
+                for (i = 0; i < numOfChan; i++) {
+                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+            return buffer;
+
+            function setUint16(data) {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            }
+
+            function setUint32(data) {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            }
+        }
+    </script>
 </body>
 </html>
