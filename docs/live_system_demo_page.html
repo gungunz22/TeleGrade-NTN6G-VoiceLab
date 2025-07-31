@@ -4,40 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live System Demonstration - TELEGRADE-NTN6G-VOICELAB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-dark: #0056b3;
-            --secondary-color: #6c757d;
-            --secondary-dark: #5a6268;
-            --accent-color: #28a745;
-            --accent-dark: #218838;
-            --bg-light: #f8f9fa;
-            --text-dark: #343a40;
-            --border-color: #dee2e6;
-            --card-bg: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.1);
+            --primary-color: #00aaff;
+            --primary-dark: #0088cc;
+            --secondary-color: #90a4ae;
+            --secondary-dark: #607d8b;
+            --accent-color: #00ffaa;
+            --accent-dark: #00cc88;
+            --bg-dark: #121a26;
+            --bg-light: #1e293b;
+            --text-light: #e2e8f0;
+            --text-dark: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --shadow: rgba(0, 170, 255, 0.1);
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             line-height: 1.6;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 95%;
             margin: 20px auto;
             background-color: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 8px 16px var(--shadow);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
             text-align: center;
             animation: fadeIn 1s ease-out;
         }
@@ -48,11 +51,11 @@
         }
 
         h1 {
-            color: var(--primary-dark);
-            font-size: 2.2em;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            text-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+            font-size: 2.5em;
+            margin-bottom: 30px;
         }
 
         .controls {
@@ -63,13 +66,13 @@
             padding: 12px 25px;
             font-size: 1.2em;
             font-weight: 700;
-            color: white;
+            color: var(--bg-dark);
             background-color: var(--accent-color);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Orbitron', sans-serif;
         }
 
         #startButton:hover {
@@ -78,24 +81,25 @@
         }
         
         #startButton:disabled {
-            background-color: var(--secondary-color);
+            background-color: var(--secondary-dark);
+            color: var(--text-dark);
             cursor: not-allowed;
             transform: none;
         }
 
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
             margin-top: 20px;
         }
 
         .chart-container {
             position: relative;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            background: #fff;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
         }
 
         .back-button-wrapper {
@@ -105,18 +109,19 @@
         .back-button {
             display: inline-block;
             padding: 12px 25px;
-            background-color: var(--secondary-color);
-            color: white;
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
             text-decoration: none;
             border-radius: 8px;
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 700;
             font-size: 1.1em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            font-family: 'Orbitron', sans-serif;
         }
         .back-button:hover {
-            background-color: var(--secondary-dark);
-            transform: translateY(-3px);
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -151,17 +156,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const startButton = document.getElementById('startButton');
+            
+            const chartTextColor = 'rgba(226, 232, 240, 0.8)';
+            const chartGridColor = 'rgba(51, 65, 85, 0.5)';
 
             const chartConfigs = {
-                anChart: { title: 'An vs. Timeslot', yLabel: 'An' },
-                sinrChart: { title: 'SINR (dB) vs. Timeslot', yLabel: 'SINR (dB)' },
-                perChart: { title: 'PER vs. Timeslot', yLabel: 'PER' },
-                qnChart: { title: 'Qn vs. Timeslot', yLabel: 'Qn' }
+                anChart: { title: 'An vs. Timeslot', yLabel: 'An', color: 'rgba(0, 255, 170, 1)' },
+                sinrChart: { title: 'SINR (dB) vs. Timeslot', yLabel: 'SINR (dB)', color: 'rgba(0, 170, 255, 1)' },
+                perChart: { title: 'PER vs. Timeslot', yLabel: 'PER', color: 'rgba(255, 100, 100, 1)' },
+                qnChart: { title: 'Qn vs. Timeslot', yLabel: 'Qn', color: 'rgba(255, 180, 0, 1)' }
             };
 
             let charts = {};
 
-            function createChart(canvasId, title, yLabel) {
+            function createChart(canvasId, title, yLabel, datasetColor) {
                 const ctx = document.getElementById(canvasId).getContext('2d');
                 return new Chart(ctx, {
                     type: 'line',
@@ -170,8 +178,8 @@
                         datasets: [{
                             label: yLabel,
                             data: [],
-                            borderColor: 'rgba(0, 123, 255, 1)',
-                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            borderColor: datasetColor,
+                            backgroundColor: datasetColor.replace('1)', '0.1)'),
                             borderWidth: 2,
                             pointRadius: 0,
                             tension: 0.4
@@ -184,7 +192,8 @@
                             title: {
                                 display: true,
                                 text: title,
-                                font: { size: 16 }
+                                font: { size: 18, family: 'Orbitron' },
+                                color: chartTextColor
                             },
                             legend: {
                                 display: false
@@ -194,14 +203,22 @@
                             x: {
                                 title: {
                                     display: true,
-                                    text: 'Timeslot'
-                                }
+                                    text: 'Timeslot',
+                                    color: chartTextColor,
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: chartTextColor },
+                                grid: { color: chartGridColor }
                             },
                             y: {
                                 title: {
                                     display: true,
-                                    text: yLabel
+                                    text: yLabel,
+                                    color: chartTextColor,
+                                    font: { size: 14 }
                                 },
+                                ticks: { color: chartTextColor },
+                                grid: { color: chartGridColor },
                                 beginAtZero: true
                             }
                         }
@@ -211,7 +228,7 @@
 
             // Initialize empty charts
             for (const [id, config] of Object.entries(chartConfigs)) {
-                charts[id] = createChart(id, config.title, config.yLabel);
+                charts[id] = createChart(id, config.title, config.yLabel, config.color);
             }
 
             async function startSimulation() {
@@ -254,14 +271,17 @@
                             chart.data.labels.push(currentTimeslot);
                             chart.data.datasets[0].data.push(datasets[id][currentIndex]);
                             
-                            chart.update('none'); // Use 'none' for no animation to improve performance
+                            if (chart.data.labels.length > 100) { // Keep the chart windowed
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                            }
                         }
+                        
+                        // Update all charts at once
+                        Object.values(charts).forEach(chart => chart.update('none'));
 
                         currentIndex++;
-                    }, 500); // Reduced delay for faster drawing
-
-                    // Final update to ensure all charts are rendered correctly
-                    Object.values(charts).forEach(chart => chart.update());
+                    }, 500); // Faster update interval
 
                 } catch (error) {
                     console.error("Failed to load or process simulation data:", error);

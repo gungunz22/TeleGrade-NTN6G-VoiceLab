@@ -4,28 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Reconstruction - TELEGRADE-NTN6G-VOICELAB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-dark: #0056b3;
-            --secondary-color: #6c757d;
-            --secondary-dark: #5a6268;
-            --accent-color: #28a745;
-            --accent-dark: #218838;
-            --bg-light: #f8f9fa;
-            --text-dark: #343a40;
-            --border-color: #dee2e6;
-            --card-bg: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.1);
+            --primary-color: #00aaff;
+            --primary-dark: #0088cc;
+            --secondary-color: #90a4ae;
+            --secondary-dark: #607d8b;
+            --accent-color: #00ffaa;
+            --accent-dark: #00cc88;
+            --bg-dark: #121a26;
+            --bg-light: #1e293b;
+            --text-light: #e2e8f0;
+            --text-dark: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --shadow: rgba(0, 170, 255, 0.1);
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             line-height: 1.6;
             display: flex;
             justify-content: center;
@@ -35,13 +37,14 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             width: 100%;
             margin: 20px auto;
             background-color: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 8px 16px var(--shadow);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
             animation: fadeIn 1s ease-out;
         }
 
@@ -50,179 +53,212 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1, h2 {
-            color: var(--primary-dark);
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
             text-align: center;
+            text-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
         }
         
         h1 {
-            font-size: 2.2em;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .page-subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        h2 {
-            font-size: 1.8em;
-            margin-top: 40px;
-            margin-bottom: 20px;
+        .header-banner {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-banner img {
+            width: 100%;
+            max-width: 800px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
         .simulator-section, .results-section {
-            background-color: #f9f9f9;
+            background-color: rgba(0,0,0,0.2);
             padding: 25px;
-            margin-bottom: 25px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+        
+        h2 {
+            font-size: 1.8em;
+            margin-top: 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .form-group label {
-            display: block;
             font-weight: bold;
-            color: #555;
+            color: var(--text-light);
             margin-bottom: 8px;
         }
 
         .form-group input[type="file"],
-        .form-group select,
-        .form-group input[type="range"] {
+        .form-group select {
             width: 100%;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             box-sizing: border-box;
         }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        
+        .slider-container input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 5px;
+            outline: none;
         }
 
-        .slider-container input[type="range"] {
-            flex-grow: 1;
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary-color);
         }
 
         #sinrValue {
             font-weight: bold;
-            color: var(--primary-dark);
-            min-width: 50px;
+            color: var(--accent-color);
+            min-width: 60px;
+            text-align: right;
         }
 
         .run-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--accent-color);
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: 700;
-            font-size: 1.2em;
-            cursor: pointer;
+            background-color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
         }
 
         .run-button:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-2px);
+            background-color: var(--primary-dark);
         }
         
         .run-button:disabled {
-            background-color: var(--secondary-color);
+            background-color: var(--secondary-dark);
             cursor: not-allowed;
+            opacity: 0.5;
         }
 
         #resultsSection {
-            display: none; /* Initially hidden */
-        }
-
-        .result-item {
-            margin-bottom: 20px;
-        }
-        
-        .result-item p {
-            margin: 0 0 10px 0;
-            font-size: 1.1em;
+            display: none;
         }
         
         .result-item .value {
             font-weight: bold;
-            color: var(--primary-dark);
+            color: var(--accent-color);
+            font-size: 1.2em;
         }
 
         audio {
             width: 100%;
             margin-top: 10px;
-        }
-
-        .back-button-wrapper {
-            margin-top: 30px;
-            text-align: center;
+            filter: invert(1) hue-rotate(180deg);
         }
 
         .back-button {
             display: inline-block;
             padding: 12px 25px;
-            background-color: var(--secondary-color);
-            color: white;
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
             text-decoration: none;
             border-radius: 8px;
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 700;
             font-size: 1.1em;
+            border: 1px solid var(--border-color);
+            font-family: 'Orbitron', sans-serif;
         }
         .back-button:hover {
-            background-color: var(--secondary-dark);
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
+        
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Voice Reconstruction Audios</h1>
+        <h1>Satellite Voice Reconstruction</h1>
+        <p class="page-subtitle">An interactive display for telecom-grade speech quality over a Non-Terrestrial Network (NTN). Upload your audio and adjust parameters to experience the trade-offs in satellite communication.</p>
 
-        <div class="simulator-section">
-            <h2>1. Configure Simulation</h2>
-            <div class="form-group">
-                <label for="audioUpload">Upload Your Audio File (.wav, .mp3)</label>
-                <input type="file" id="audioUpload" accept="audio/wav, audio/mpeg">
-            </div>
-            <div class="form-group">
-                <label for="codecSelect">Select Codec (Determines Bitrate `R_k`)</label>
-                <select id="codecSelect"></select>
-            </div>
-            <div class="form-group">
-                <label for="sinrSlider">Adjust Channel SINR (dB)</label>
-                <div class="slider-container">
-                    <input type="range" id="sinrSlider" min="-5" max="30" value="15" step="1">
-                    <span id="sinrValue">15 dB</span>
-                </div>
-            </div>
-            <button id="runButton" class="run-button" disabled>Upload Audio to Start</button>
+        <div class="header-banner">
+            <h3>System Overview</h3>
+            <img src="assets/pics/System Overview.jpg" alt="System Overview Diagram">
         </div>
 
-        <div id="resultsSection" class="results-section">
-            <h2>2. Simulation Results</h2>
-            <div class="result-item">
-                <p>Original Audio:</p>
-                <audio id="originalAudio" controls></audio>
+        <div class="main-layout">
+            <div class="simulator-section">
+                <h2>1. Configuration</h2>
+                <div class="form-group">
+                    <label for="audioUpload">Upload Audio File (.wav, .mp3)</label>
+                    <input type="file" id="audioUpload" accept="audio/wav, audio/mpeg">
+                </div>
+                <div class="form-group">
+                    <label for="codecSelect">Select Codec (Bitrate `R_k`)</label>
+                    <select id="codecSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label for="sinrSlider">Channel Quality (SINR)</label>
+                    <div class="slider-container">
+                        <input type="range" id="sinrSlider" min="-5" max="30" value="15" step="1">
+                        <span id="sinrValue">15 dB</span>
+                    </div>
+                </div>
+                <button id="runButton" class="run-button" disabled>Upload Audio to Start</button>
             </div>
-            <hr>
-            <div class="result-item">
-                <p>Quantization Distortion: <span id="distortionValue" class="value"></span></p>
-                <p>Packet Error Rate (PER): <span id="perValue" class="value"></span></p>
-                <p>Mean Opinion Score (MoS): <span id="mosValue" class="value"></span></p>
-            </div>
-            <div class="result-item">
-                <p>Reconstructed Audio (Simulated):</p>
-                <audio id="reconstructedAudio" controls></audio>
+
+            <div id="resultsSection" class="results-section">
+                <h2>2. Simulation Results</h2>
+                <div class="result-item">
+                    <p><strong>Original Audio:</strong></p>
+                    <audio id="originalAudio" controls></audio>
+                </div>
+                <hr>
+                <div class="result-item">
+                    <p>Quantization Distortion: <span id="distortionValue" class="value">N/A</span></p>
+                    <p>Packet Error Rate (PER): <span id="perValue" class="value">N/A</span></p>
+                    <p>Mean Opinion Score (MoS): <span id="mosValue" class="value">N/A</span></p>
+                </div>
+                <div class="result-item">
+                    <p><strong>Reconstructed Audio (Simulated):</strong></p>
+                    <audio id="reconstructedAudio" controls></audio>
+                </div>
             </div>
         </div>
 
@@ -270,25 +306,18 @@
         }
 
         function calculateQuantizationDistortion(R_k, arrival_bits) {
-            // Dquant(qk) = c * exp(−Rk/Rmax) * rk
-            // We assume arrival_bits (rk) is proportional to the bitrate for this simulation
             const rk = R_k; 
             return DISTORTION_CONST * Math.exp(-R_k / max_bitrate) * rk;
         }
 
         function calculateMos(sinr, codec) {
-            // mos = alpha * log(sinr) + beta
-            // Note: Math.log is natural log (ln), which is what's typically used in these models.
-            // We convert SINR from dB to linear scale first: linear = 10^(dB/10)
             const sinrLinear = Math.pow(10, sinr / 10);
             const mos = codec.alpha * Math.log(sinrLinear) + codec.beta;
             return Math.max(1, Math.min(5, mos)); // Clamp MoS between 1 and 5
         }
         
         function calculatePer(sinr) {
-            // Simplified PER model: higher SINR -> lower PER.
-            // This is a heuristic model for demonstration.
-            const per = 0.5 * (1 - Math.tanh((sinr - 5) / 10)); // Sigmoid-like function
+            const per = 0.5 * (1 - Math.tanh((sinr - 5) / 10));
             return Math.max(0, Math.min(1, per)); // Clamp PER between 0 and 1
         }
 
@@ -303,16 +332,14 @@
                 const originalData = buffer.getChannelData(channel);
                 const newData = newBuffer.getChannelData(channel);
                 
-                const chunkSize = Math.floor(buffer.sampleRate * 0.02); // 20ms chunks, typical for VoIP
+                const chunkSize = Math.floor(buffer.sampleRate * 0.02); // 20ms chunks
                 
                 for (let i = 0; i < originalData.length; i += chunkSize) {
                     if (Math.random() < per) {
-                        // Packet loss: fill chunk with silence
                         for (let j = i; j < i + chunkSize && j < originalData.length; j++) {
                             newData[j] = 0;
                         }
                     } else {
-                        // Packet received: copy data
                         for (let j = i; j < i + chunkSize && j < originalData.length; j++) {
                             newData[j] = originalData[j];
                         }
@@ -337,6 +364,8 @@
         audioUpload.addEventListener('change', (event) => {
             audioFile = event.target.files[0];
             if (audioFile) {
+                runButton.textContent = 'Processing...';
+                runButton.disabled = true;
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     audioContext.decodeAudioData(e.target.result, (buffer) => {
@@ -344,12 +373,13 @@
                         originalAudio.src = URL.createObjectURL(audioFile);
                         runButton.disabled = false;
                         runButton.textContent = 'Run Simulation';
+                        resultsSection.style.display = 'grid';
+                    }, (error) => {
+                        alert('Error decoding audio file. Please try a different file.');
+                        runButton.textContent = 'Upload Audio to Start';
                     });
                 };
                 reader.readAsArrayBuffer(audioFile);
-            } else {
-                runButton.disabled = true;
-                runButton.textContent = 'Upload Audio to Start';
             }
         });
 
@@ -359,81 +389,48 @@
                 return;
             }
 
-            // 1. Get parameters from UI
             const selectedCodecName = codecSelect.value;
             const selectedCodec = CODECS[selectedCodecName];
             const sinr = parseFloat(sinrSlider.value);
 
-            // 2. Perform calculations
             const distortion = calculateQuantizationDistortion(selectedCodec.R, selectedCodec.R);
             const mos = calculateMos(sinr, selectedCodec);
             const per = calculatePer(sinr);
 
-            // 3. Simulate reconstruction
             const reconstructedBuffer = applyDistortion(originalAudioBuffer, per);
             reconstructedAudio.src = createAudioUrl(reconstructedBuffer);
 
-            // 4. Display results
             distortionValue.textContent = distortion.toFixed(2);
             perValue.textContent = `${(per * 100).toFixed(1)}%`;
             mosValue.textContent = `${mos.toFixed(2)} / 5.0`;
-            resultsSection.style.display = 'block';
         });
 
         // --- Initialization ---
         populateCodecs();
         
-        // Helper to convert AudioBuffer to a WAV file blob
         function bufferToWave(abuffer) {
             let numOfChan = abuffer.numberOfChannels,
                 length = abuffer.length * numOfChan * 2 + 44,
                 buffer = new ArrayBuffer(length),
                 view = new DataView(buffer),
-                channels = [],
-                i,
-                sample,
-                offset = 0,
-                pos = 0;
-
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8); // file length - 8
-            setUint32(0x45564157); // "WAVE"
-
-            setUint32(0x20746d66); // "fmt " chunk
-            setUint32(16); // length = 16
-            setUint16(1); // PCM (uncompressed)
-            setUint16(numOfChan);
-            setUint32(abuffer.sampleRate);
-            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
-            setUint16(numOfChan * 2); // block-align
-            setUint16(16); // 16-bit
-
-            setUint32(0x61746164); // "data" - chunk
-            setUint32(length - pos - 4); // chunk length
-
-            for (i = 0; i < abuffer.numberOfChannels; i++)
-                channels.push(abuffer.getChannelData(i));
-
+                channels = [], i, sample, offset = 0, pos = 0;
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+            setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+            setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+            setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164);
+            setUint32(length - pos - 4);
+            for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
             while (pos < length) {
                 for (i = 0; i < numOfChan; i++) {
                     sample = Math.max(-1, Math.min(1, channels[i][offset]));
                     sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-                    view.setInt16(pos, sample, true);
-                    pos += 2;
+                    view.setInt16(pos, sample, true); pos += 2;
                 }
                 offset++;
             }
             return buffer;
-
-            function setUint16(data) {
-                view.setUint16(pos, data, true);
-                pos += 2;
-            }
-
-            function setUint32(data) {
-                view.setUint32(pos, data, true);
-                pos += 4;
-            }
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
         }
     </script>
 </body>
