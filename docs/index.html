@@ -5,114 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Hub - TELEGRADE-NTN6G-VOICELAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --primary-color: #00aaff;
-            --primary-dark: #0088cc;
-            --secondary-color: #90a4ae;
-            --secondary-dark: #607d8b;
-            --accent-color: #00ffaa;
-            --accent-dark: #00cc88;
-            --bg-dark: #121a26;
-            --bg-light: #1e293b;
-            --text-light: #e2e8f0;
-            --text-dark: #94a3b8;
-            --border-color: #334155;
-            --card-bg: #1e293b;
-            --shadow: rgba(0, 170, 255, 0.1);
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-
+        /* index.html specific styles */
         .container {
-            max-width: 900px;
-            width: 100%;
-            margin: 20px auto;
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-            text-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
-            font-size: 2.8em;
-            margin-bottom: 15px;
-        }
-        
-        .page-subtitle {
-            font-size: 1.2em;
-            color: var(--text-dark);
-            margin-bottom: 40px;
-        }
-
-        .navigation-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .nav-card a {
-            display: block;
-            padding: 25px;
-            background-color: rgba(0,0,0,0.2);
-            color: var(--text-light);
-            text-decoration: none;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
-            font-size: 1.2em;
-            font-weight: 700;
-        }
-
-        .nav-card a:hover {
-            background-color: rgba(0, 170, 255, 0.1);
-            border-color: var(--primary-color);
-            transform: translateY(-5px);
-            color: var(--primary-color);
-        }
-
-        .readme-section {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--border-color);
-        }
-
-        .readme-section a {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1em;
-            transition: color 0.3s ease;
-        }
-
-        .readme-section a:hover {
-            color: var(--accent-dark);
-            text-decoration: underline;
+            background-color: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
@@ -125,11 +23,11 @@
 
         <nav>
             <ul class="navigation-grid">
-                <li class="nav-card"><a href="demo_page.html">Demo Video</a></li>
-                <li class="nav-card"><a href="mel_spectrogram_page.html">Mel-frequency Spectrograms</a></li>
-                <li class="nav-card"><a href="system_show_page.html">System Diagram</a></li>
-                <li class="nav-card"><a href="voice_reconstruction_page.html">Interactive Voice Simulator</a></li>
-                <li class="nav-card"><a href="live_system_demo_page.html">Live System Demonstration</a></li>
+                <li class="nav-card"><a href="demo_page.html">🎬 Demo Video</a></li>
+                <li class="nav-card"><a href="mel_spectrogram_page.html">📊 Mel-frequency Spectrograms</a></li>
+                <li class="nav-card"><a href="system_show_page.html">🛰️ System Diagram</a></li>
+                <li class="nav-card"><a href="voice_reconstruction_page.html">🎤 Interactive Voice Simulator</a></li>
+                <li class="nav-card"><a href="live_system_demo_page.html">📈 Live System Demonstration</a></li>
             </ul>
         </nav>
 

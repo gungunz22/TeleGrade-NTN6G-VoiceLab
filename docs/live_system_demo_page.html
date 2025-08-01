@@ -5,31 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live System Demonstration - TELEGRADE-NTN6G-VOICELAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary-color: #00aaff;
-            --primary-dark: #0088cc;
-            --secondary-color: #90a4ae;
-            --secondary-dark: #607d8b;
-            --accent-color: #00ffaa;
-            --accent-dark: #00cc88;
-            --bg-dark: #121a26;
-            --bg-light: #1e293b;
-            --text-light: #e2e8f0;
-            --text-dark: #94a3b8;
-            --border-color: #334155;
-            --card-bg: #1e293b;
-            --shadow: rgba(0, 170, 255, 0.1);
-        }
-
+        /* live_system_demo_page.html specific styles */
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
+            /* Remove display flex, justify-content, align-items for this page */
+            display: block; /* Override flexbox from common.css */
+            justify-content: unset;
+            align-items: unset;
+            min-height: unset;
+            padding: 20px; /* Adjust padding as needed */
         }
 
         .container {
@@ -45,15 +31,7 @@
             animation: fadeIn 1s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-            text-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
             font-size: 2.5em;
             margin-bottom: 30px;
         }
@@ -127,7 +105,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Live System Demonstration</h1>
+        <h1>📈 Live System Demonstration</h1>
 
         <div class="controls">
             <button id="startButton">Start Simulation</button>

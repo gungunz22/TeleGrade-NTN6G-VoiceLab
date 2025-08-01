@@ -5,59 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Reconstruction - TELEGRADE-NTN6G-VOICELAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --primary-color: #00aaff;
-            --primary-dark: #0088cc;
-            --secondary-color: #90a4ae;
-            --secondary-dark: #607d8b;
-            --accent-color: #00ffaa;
-            --accent-dark: #00cc88;
-            --bg-dark: #121a26;
-            --bg-light: #1e293b;
-            --text-light: #e2e8f0;
-            --text-dark: #94a3b8;
-            --border-color: #334155;
-            --card-bg: #1e293b;
-            --shadow: rgba(0, 170, 255, 0.1);
-        }
-
+        /* voice_reconstruction_page.html specific styles */
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            display: flex;
-            justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
-            padding: 40px 20px;
         }
 
         .container {
             max-width: 1200px;
-            width: 100%;
-            margin: 20px auto;
             background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         h1, h2, h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
             text-align: center;
-            text-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
         }
         
         h1 {
@@ -209,12 +170,11 @@
                 grid-template-columns: 1fr;
             }
         }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Satellite Voice Reconstruction</h1>
+        <h1>🎤 Satellite Voice Reconstruction</h1>
         <p class="page-subtitle">An interactive display for telecom-grade speech quality over a Non-Terrestrial Network (NTN). Upload your audio and adjust parameters to experience the trade-offs in satellite communication.</p>
 
         <div class="header-banner">
