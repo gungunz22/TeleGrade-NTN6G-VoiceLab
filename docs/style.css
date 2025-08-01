@@ -19,11 +19,11 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--bg-dark);
-    background-image: url('assets/pics/StockSnap_JRVIMXKSYX.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; /* 使背景图片固定，不随滚动条滚动 */
+    background-image: var(--background-image-url, none); /* 默认不设置背景图片 */
+    background-size: var(--background-size, cover);
+    background-position: var(--background-position, center);
+    background-repeat: var(--background-repeat, no-repeat);
+    background-attachment: var(--background-attachment, fixed); /* 使背景图片固定，不随滚动条滚动 */
     color: var(--text-light);
     line-height: 1.6;
     display: flex;
