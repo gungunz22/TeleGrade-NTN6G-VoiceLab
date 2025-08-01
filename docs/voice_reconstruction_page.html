@@ -38,7 +38,7 @@
             margin-right: auto;
         }
 
-        .header-banner {
+        .audio-samples-section {
             margin-bottom: 40px;
             padding: 20px;
             background: rgba(0,0,0,0.2);
@@ -46,12 +46,15 @@
             border: 1px solid var(--border-color);
         }
 
-        .header-banner img {
-            width: 100%;
-            max-width: 800px;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
+        .audio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .audio-item {
+            flex: 1;
+            margin-bottom: 10px;
         }
         
         .main-layout {
@@ -179,9 +182,9 @@
         <h1>🎤 Satellite Voice Reconstruction</h1>
         <p class="page-subtitle">An interactive display for telecom-grade speech quality over a Non-Terrestrial Network (NTN). Upload your audio and adjust parameters to experience the trade-offs in satellite communication.</p>
 
-        <div class="header-banner">
-            <h3>System Overview</h3>
-            <img src="assets/pics/System Overview.jpg" alt="System Overview Diagram">
+        <div class="audio-samples-section">
+            <h3>Audio Samples</h3>
+            <div id="audio-samples-container"></div>
         </div>
 
         <div class="main-layout">
@@ -248,6 +251,7 @@
         const resultsSection = document.getElementById('resultsSection');
         const originalAudio = document.getElementById('originalAudio');
         const reconstructedAudio = document.getElementById('reconstructedAudio');
+        const audioSamplesContainer = document.getElementById('audio-samples-container');
         const distortionValue = document.getElementById('distortionValue');
         const perValue = document.getElementById('perValue');
         const mosValue = document.getElementById('mosValue');
@@ -367,8 +371,72 @@
             mosValue.textContent = `${mos.toFixed(2)} / 5.0`;
         });
 
+        // --- Audio Samples ---
+        const audioSamples = [
+            { name: 'Sample 1 - Original', path: 'assets/audio/sample1_original.wav' },
+            { name: 'Sample 1 - Reconstructed', path: 'assets/audio/sample1_reconstructed.wav' },
+            { name: 'Sample 2 - Original', path: 'assets/audio/sample2_original.wav' },
+            { name: 'Sample 2 - Reconstructed', path: 'assets/audio/sample2_reconstructed.wav' }
+        ];
+
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        async function displayAudioSamples() {
+            for (let i = 0; i < audioSamples.length; i += 2) {
+                const group = document.createElement('div');
+                group.className = 'audio-group';
+
+                for (let j = i; j < i + 2 && j < audioSamples.length; j++) {
+                    const sample = audioSamples[j];
+                    const item = document.createElement('div');
+                    item.className = 'audio-item';
+
+                    const name = document.createElement('p');
+                    name.textContent = sample.name;
+                    item.appendChild(name);
+
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = sample.path;
+                    item.appendChild(audio);
+
+                    const size = document.createElement('p');
+                    size.textContent = 'File size: Loading...';
+                    item.appendChild(size);
+
+                    group.appendChild(item);
+
+                    fetch(sample.path, { method: 'HEAD' })
+                        .then(response => {
+                            if (response.ok) {
+                                const fileSize = response.headers.get('content-length');
+                                if (fileSize) {
+                                    size.textContent = `File size: ${formatBytes(fileSize)}`;
+                                } else {
+                                    size.textContent = 'File size: N/A';
+                                }
+                            } else {
+                                size.textContent = 'File size: Not found';
+                            }
+                        })
+                        .catch(() => {
+                            size.textContent = 'File size: Error';
+                        });
+                }
+                audioSamplesContainer.appendChild(group);
+            }
+        }
+
         // --- Initialization ---
         populateCodecs();
+        displayAudioSamples();
         
         function bufferToWave(abuffer) {
             let numOfChan = abuffer.numberOfChannels,
