@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Showcase - TELEGRADE-NTN6G-VOICELAB</title>
+    <link rel="preload" href="assets/pics/StockSnap_JRVIMXKSYX.jpg" as="image">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="sticky-nav">
+        <div class="container">
+            <nav>
+                <ul class="navigation-grid">
+                    <li class="nav-card"><a href="#demo-video">🎬 Demo Video</a></li>
+                    <li class="nav-card"><a href="#mel-spectrograms">📊 Mel Spectrograms</a></li>
+                    <li class="nav-card"><a href="#system-diagram">🛰️ System Diagram</a></li>
+                    <li class="nav-card"><a href="#voice-reconstruction">🎤 Voice Simulator</a></li>
+                    <li class="nav-card"><a href="#live-demo">📈 Live Demo</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <!-- Demo Video Section -->
+        <section id="demo-video" class="content-section">
+            <div class="container">
+                <h1>🎬 Project Demo Video</h1>
+                <div class="video-wrapper">
+                    <video controls>
+                        <source src="assets/demo/output.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mel-frequency Spectrograms Section -->
+        <section id="mel-spectrograms" class="content-section">
+            <div class="container">
+                <h1>📊 Mel-frequency Spectrograms</h1>
+                <div class="image-grid">
+                    <div class="image-item">
+                        <p>mel_sample2.png</p>
+                        <img src="assets/Mel-frequency-spectrogram/mel_sample2.png" alt="Mel-frequency spectrogram sample 2">
+                    </div>
+                    <div class="image-item">
+                        <p>mel_sample11.png</p>
+                        <img src="assets/Mel-frequency-spectrogram/mel_sample11.png" alt="Mel-frequency spectrogram sample 11">
+                    </div>
+                    <div class="image-item">
+                        <p>mel_sample13.png</p>
+                        <img src="assets/Mel-frequency-spectrogram/mel_sample13.png" alt="Mel-frequency spectrogram sample 13">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Diagram Section -->
+        <section id="system-diagram" class="content-section">
+            <div class="container">
+                <h1>🛰️ Project System Diagram</h1>
+                <div class="image-wrapper">
+                    <img src="assets/system_show/system.png" alt="System Diagram">
+                </div>
+            </div>
+        </section>
+
+        <!-- Voice Reconstruction Section -->
+        <section id="voice-reconstruction" class="content-section">
+            <div class="container">
+                <h1>🎤 Satellite Voice Reconstruction</h1>
+                <p class="page-subtitle">An interactive display for telecom-grade speech quality over a Non-Terrestrial Network (NTN). Upload your audio and adjust parameters to experience the trade-offs in satellite communication.</p>
+                <div class="audio-samples-section">
+                    <h3>Audio Samples</h3>
+                    <div id="audio-samples-container"></div>
+                </div>
+                <div class="main-layout">
+                    <div class="simulator-section">
+                        <h2>1. Configuration</h2>
+                        <div class="form-group">
+                            <label for="audioUpload">Upload Audio File (.wav, .mp3)</label>
+                            <input type="file" id="audioUpload" accept="audio/wav, audio/mpeg">
+                        </div>
+                        <div class="form-group">
+                            <label for="codecSelect">Select Codec (Bitrate `R_k`)</label>
+                            <select id="codecSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sinrSlider">Channel Quality (SINR)</label>
+                            <div class="slider-container">
+                                <input type="range" id="sinrSlider" min="-5" max="30" value="15" step="1">
+                                <span id="sinrValue">15 dB</span>
+                            </div>
+                        </div>
+                        <button id="runButton" class="run-button" disabled>Upload Audio to Start</button>
+                    </div>
+                    <div id="resultsSection" class="results-section">
+                        <h2>2. Simulation Results</h2>
+                        <div class="result-item">
+                            <p><strong>Original Audio:</strong></p>
+                            <audio id="originalAudio" controls></audio>
+                        </div>
+                        <hr>
+                        <div class="result-item">
+                            <p>Quantization Distortion: <span id="distortionValue" class="value">N/A</span></p>
+                            <p>Packet Error Rate (PER): <span id="perValue" class="value">N/A</span></p>
+                            <p>Mean Opinion Score (MoS): <span id="mosValue" class="value">N/A</span></p>
+                        </div>
+                        <div class="result-item">
+                            <p><strong>Reconstructed Audio (Simulated):</strong></p>
+                            <audio id="reconstructedAudio" controls></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live System Demonstration Section -->
+        <section id="live-demo" class="content-section">
+            <div class="container">
+                <h1>📈 Live System Demonstration</h1>
+                <div class="controls">
+                    <button id="startButton">Start Simulation</button>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-container"><canvas id="anChart"></canvas></div>
+                    <div class="chart-container"><canvas id="sinrChart"></canvas></div>
+                    <div class="chart-container"><canvas id="perChart"></canvas></div>
+                    <div class="chart-container"><canvas id="qnChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Live System Demonstration Script
+        (function() {
+            const startButton = document.getElementById('startButton');
+            if (!startButton) return;
+
+            const chartTextColor = 'rgba(226, 232, 240, 0.8)';
+            const chartGridColor = 'rgba(51, 65, 85, 0.5)';
+            const chartConfigs = {
+                anChart: { title: 'An vs. Timeslot', yLabel: 'An', color: 'rgba(0, 255, 170, 1)' },
+                sinrChart: { title: 'SINR (dB) vs. Timeslot', yLabel: 'SINR (dB)', color: 'rgba(0, 170, 255, 1)' },
+                perChart: { title: 'PER vs. Timeslot', yLabel: 'PER', color: 'rgba(255, 100, 100, 1)' },
+                qnChart: { title: 'Qn vs. Timeslot', yLabel: 'Qn', color: 'rgba(255, 180, 0, 1)' }
+            };
+            let charts = {};
+
+            function createChart(canvasId, title, yLabel, datasetColor) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [{ label: yLabel, data: [], borderColor: datasetColor, backgroundColor: datasetColor.replace('1)', '0.1)'), borderWidth: 2, pointRadius: 0, tension: 0.4 }] },
+                    options: {
+                        responsive: true, maintainAspectRatio: true,
+                        plugins: { title: { display: true, text: title, font: { size: 18, family: 'Orbitron' }, color: chartTextColor }, legend: { display: false } },
+                        scales: {
+                            x: { title: { display: true, text: 'Timeslot', color: chartTextColor, font: { size: 14 } }, ticks: { color: chartTextColor }, grid: { color: chartGridColor } },
+                            y: { title: { display: true, text: yLabel, color: chartTextColor, font: { size: 14 } }, ticks: { color: chartTextColor }, grid: { color: chartGridColor }, beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            Object.entries(chartConfigs).forEach(([id, config]) => {
+                charts[id] = createChart(id, config.title, config.yLabel, config.color);
+            });
+
+            async function startSimulation() {
+                startButton.disabled = true;
+                startButton.textContent = 'Simulation in Progress...';
+                try {
+                    const response = await fetch('simulation_results_final.json');
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const data = await response.json();
+                    const { timeslot, An, SINR_dB, PER, Qn } = data;
+                    const datasets = { anChart: An, sinrChart: SINR_dB, perChart: PER, qnChart: Qn };
+
+                    Object.values(charts).forEach(chart => {
+                        chart.data.labels = [];
+                        chart.data.datasets[0].data = [];
+                        chart.update();
+                    });
+
+                    let currentIndex = 0;
+                    const interval = setInterval(() => {
+                        if (currentIndex >= timeslot.length) {
+                            clearInterval(interval);
+                            startButton.textContent = 'Simulation Finished';
+                            return;
+                        }
+                        const currentTimeslot = timeslot[currentIndex];
+                        Object.entries(charts).forEach(([id, chart]) => {
+                            chart.data.labels.push(currentTimeslot);
+                            chart.data.datasets[0].data.push(datasets[id][currentIndex]);
+                            if (chart.data.labels.length > 100) {
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                            }
+                        });
+                        Object.values(charts).forEach(chart => chart.update('none'));
+                        currentIndex++;
+                    }, 500);
+                } catch (error) {
+                    console.error("Failed to load or process simulation data:", error);
+                    alert("Error: Could not load simulation data. Check the console for details.");
+                    startButton.disabled = false;
+                    startButton.textContent = 'Start Simulation';
+                }
+            }
+            startButton.addEventListener('click', startSimulation);
+        })();
+
+        // Voice Reconstruction Script
+        (function() {
+            const audioUpload = document.getElementById('audioUpload');
+            if (!audioUpload) return;
+
+            const DISTORTION_CONST = 0.1;
+            const CODECS = {
+                'Codec 1 (Low Rate)':  { R: 8000,  alpha: 0.5, beta: 1.5 },
+                'Codec 2 (Mid Rate)':  { R: 16000, alpha: 0.6, beta: 1.8 },
+                'Codec 3 (High Rate)': { R: 32000, alpha: 0.7, beta: 2.0 }
+            };
+            const max_bitrate = Math.max(...Object.values(CODECS).map(c => c.R));
+
+            const codecSelect = document.getElementById('codecSelect');
+            const sinrSlider = document.getElementById('sinrSlider');
+            const sinrValue = document.getElementById('sinrValue');
+            const runButton = document.getElementById('runButton');
+            const resultsSection = document.getElementById('resultsSection');
+            const originalAudio = document.getElementById('originalAudio');
+            const reconstructedAudio = document.getElementById('reconstructedAudio');
+            const audioSamplesContainer = document.getElementById('audio-samples-container');
+            const distortionValue = document.getElementById('distortionValue');
+            const perValue = document.getElementById('perValue');
+            const mosValue = document.getElementById('mosValue');
+
+            let originalAudioBuffer = null;
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            function populateCodecs() {
+                Object.keys(CODECS).forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = `${name} (${CODECS[name].R / 1000} kbps)`;
+                    codecSelect.appendChild(option);
+                });
+            }
+
+            function calculateQuantizationDistortion(R_k) {
+                return DISTORTION_CONST * Math.exp(-R_k / max_bitrate) * R_k;
+            }
+
+            function calculateMos(sinr, codec) {
+                const sinrLinear = 10 ** (sinr / 10);
+                const mos = codec.alpha * Math.log(sinrLinear) + codec.beta;
+                return Math.max(1, Math.min(5, mos));
+            }
+            
+            function calculatePer(sinr) {
+                return 0.5 * (1 - Math.tanh((sinr - 5) / 10));
+            }
+
+            function applyDistortion(buffer, per) {
+                const newBuffer = audioContext.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+                for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+                    const originalData = buffer.getChannelData(ch);
+                    const newData = newBuffer.getChannelData(ch);
+                    const chunkSize = Math.floor(buffer.sampleRate * 0.02); // 20ms chunks
+                    for (let i = 0; i < originalData.length; i += chunkSize) {
+                        if (Math.random() < per) {
+                            for (let j = i; j < i + chunkSize && j < originalData.length; j++) newData[j] = 0;
+                        } else {
+                            for (let j = i; j < i + chunkSize && j < originalData.length; j++) newData[j] = originalData[j];
+                        }
+                    }
+                }
+                return newBuffer;
+            }
+            
+            function bufferToWave(abuffer) {
+                let numOfChan = abuffer.numberOfChannels, len = abuffer.length * numOfChan * 2 + 44, buf = new ArrayBuffer(len), view = new DataView(buf), chans = [], i, sample, offset = 0, pos = 0;
+                const setUint16 = d => { view.setUint16(pos, d, true); pos += 2; };
+                const setUint32 = d => { view.setUint32(pos, d, true); pos += 4; };
+                setUint32(0x46464952); setUint32(len - 8); setUint32(0x45564157);
+                setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+                setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+                setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164);
+                setUint32(len - pos - 4);
+                for (i = 0; i < abuffer.numberOfChannels; i++) chans.push(abuffer.getChannelData(i));
+                while (pos < len) {
+                    for (i = 0; i < numOfChan; i++) {
+                        sample = Math.max(-1, Math.min(1, chans[i][offset]));
+                        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+                        view.setInt16(pos, sample, true); pos += 2;
+                    }
+                    offset++;
+                }
+                return buf;
+            }
+
+            function createAudioUrl(buffer) {
+                const wav = bufferToWave(buffer);
+                const blob = new Blob([wav], { type: 'audio/wav' });
+                return URL.createObjectURL(blob);
+            }
+
+            sinrSlider.addEventListener('input', () => { sinrValue.textContent = `${sinrSlider.value} dB`; });
+
+            audioUpload.addEventListener('change', (event) => {
+                const audioFile = event.target.files[0];
+                if (audioFile) {
+                    runButton.textContent = 'Processing...';
+                    runButton.disabled = true;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        audioContext.decodeAudioData(e.target.result, (buffer) => {
+                            originalAudioBuffer = buffer;
+                            originalAudio.src = URL.createObjectURL(audioFile);
+                            runButton.disabled = false;
+                            runButton.textContent = 'Run Simulation';
+                            resultsSection.style.display = 'grid';
+                        }, () => {
+                            alert('Error decoding audio file. Please try a different file.');
+                            runButton.textContent = 'Upload Audio to Start';
+                        });
+                    };
+                    reader.readAsArrayBuffer(audioFile);
+                }
+            });
+
+            runButton.addEventListener('click', () => {
+                if (!originalAudioBuffer) return alert('Please upload an audio file first.');
+                const selectedCodec = CODECS[codecSelect.value];
+                const sinr = parseFloat(sinrSlider.value);
+                const distortion = calculateQuantizationDistortion(selectedCodec.R);
+                const mos = calculateMos(sinr, selectedCodec);
+                const per = calculatePer(sinr);
+                const reconstructedBuffer = applyDistortion(originalAudioBuffer, per);
+                reconstructedAudio.src = createAudioUrl(reconstructedBuffer);
+                distortionValue.textContent = distortion.toFixed(2);
+                perValue.textContent = `${(per * 100).toFixed(1)}%`;
+                mosValue.textContent = `${mos.toFixed(2)} / 5.0`;
+            });
+
+            const audioSamples = [
+                { name: 'Sample 1 - Original', path: 'assets/audio/m93.wav' },
+                { name: 'Sample 1 - Reconstructed', path: 'assets/audio/m93_out.wav' },
+                { name: 'Sample 2 - Original', path: 'assets/audio/f93.wav' },
+                { name: 'Sample 2 - Reconstructed', path: 'assets/audio/f93_out.wav' }
+            ];
+
+            function formatBytes(bytes, decimals = 2) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return `${parseFloat((bytes / (k ** i)).toFixed(dm))} ${sizes[i]}`;
+            }
+
+            async function displayAudioSamples() {
+                for (let i = 0; i < audioSamples.length; i += 2) {
+                    const group = document.createElement('div');
+                    group.className = 'audio-group';
+                    for (let j = i; j < i + 2 && j < audioSamples.length; j++) {
+                        const sample = audioSamples[j];
+                        const item = document.createElement('div');
+                        item.className = 'audio-item';
+                        item.innerHTML = `<p>${sample.name}</p><audio controls src="${sample.path}"></audio><p class="file-size">File size: Loading...</p>`;
+                        group.appendChild(item);
+                        fetch(sample.path, { method: 'HEAD' })
+                            .then(res => res.ok ? res.headers.get('content-length') : null)
+                            .then(size => {
+                                const sizeP = item.querySelector('.file-size');
+                                sizeP.textContent = size ? `File size: ${formatBytes(size)}` : 'File size: N/A';
+                            }).catch(() => {
+                                const sizeP = item.querySelector('.file-size');
+                                sizeP.textContent = 'File size: Error';
+                            });
+                    }
+                    audioSamplesContainer.appendChild(group);
+                }
+            }
+
+            populateCodecs();
+            displayAudioSamples();
+        })();
+    </script>
+</body>
+</html>
